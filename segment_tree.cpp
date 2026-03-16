@@ -1,54 +1,6 @@
 #include <iostream>
 #include <vector>
 
-class SegmentTree {
-    int n;
-    std::vector<int> tree;
-
-public:
-    SegmentTree(const std::vector<int>& data) {
-        n = data.size();
-        tree.resize(4 * n); // Rule of thumb: size 4n to avoid overflow
-        build(data, 1, 0, n - 1);
-    }
-
-    void build(const std::vector<int>& data, int node, int start, int end) {
-        if (start == end) {
-            tree[node] = data[start];
-        } else {
-            int mid = (start + end) / 2;
-            build(data, 2 * node, start, mid);
-            build(data, 2 * node + 1, mid + 1, end);
-            tree[node] = tree[2 * node] + tree[2 * node + 1];
-        }
-    }
-
-    void update(int node, int start, int end, int idx, int val) {
-        if (start == end) {
-            tree[node] = val;
-            return;
-        }
-        int mid = (start + end) / 2;
-        if (idx <= mid) update(2 * node, start, mid, idx, val);
-        else update(2 * node + 1, mid + 1, end, idx, val);
-        tree[node] = tree[2 * node] + tree[2 * node + 1];
-    }
-
-    int query(int node, int start, int end, int l, int r) {
-        if (r < start || end < l) return 0; // Out of range
-        if (l <= start && end <= r) return tree[node]; // Fully in range
-        
-        int mid = (start + end) / 2;
-        return query(2 * node, start, mid, l, r) + 
-               query(2 * node + 1, mid + 1, end, l, r);
-    }
-
-    // Helper wrappers for cleaner main() calls
-    void update(int idx, int val) { update(1, 0, n - 1, idx, val); }
-    int query(int l, int r) { return query(1, 0, n - 1, l, r); }
-};
-
-
 
 using namespace std;
 
